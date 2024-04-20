@@ -4,6 +4,7 @@ from pygame.mouse import get_pressed as mouse_buttons
 from pygame.mouse import get_pos as mouse_pos
 from pygame.image import load
 
+from saveMap import SaveLoadMap
 from settings import *
 from support import *
 
@@ -18,6 +19,21 @@ class Editor:
 		# main setup 
 		self.display_surface = pygame.display.get_surface()
 		self.canvas_data = {}
+		self.layers = {
+			'water': {},
+			'bg palms': {},
+			'terrain': {}, 
+			'enemies': {},
+			'coins': {}, 
+			'fg objects': {},}
+
+		#map
+		self.save_map = SaveLoadMap(".pkl","save_map")
+		self.load_map_data()
+		self.save_map_data()
+
+		self.save_map_level()
+		#self.load_map_level()
 
 		# imports 
 		self.land_tiles = land_tiles
@@ -25,7 +41,7 @@ class Editor:
 
 		# clouds
 		self.current_clouds = []
-		self.cloud_surf = import_folder('../graphics/clouds')
+		self.cloud_surf = import_folder('graphics/clouds')
 		self.cloud_timer = pygame.USEREVENT + 1
 		pygame.time.set_timer(self.cloud_timer, 2000)
 		self.startup_clouds()
@@ -68,6 +84,27 @@ class Editor:
 			origin = self.origin,
 			group = self.canvas_objects)
 
+
+	#map
+	def save_map_data(self):
+		# Lưu dữ liệu bản đồ hiện tại
+		self.save_map.save_data(self.canvas_data, "save_map_editor")
+		print("Map saved successfully!")
+
+	def load_map_data(self):
+		# Load dữ liệu bản đồ từ tệp
+		self.canvas_data = self.save_map.load_data("save_map_editor")
+		print("Map loaded successfully!")
+
+	def save_map_level(self):
+		# Lưu dữ liệu bản đồ hiện tại
+		self.save_map.save_data(self.layers, "save_map")
+		print("Map saved successfully!")
+
+	def load_map_level(self):
+		# Load dữ liệu bản đồ từ tệp
+		self.layers = self.save_map.load_data("save_map")
+		print("Map loaded successfully!")
 
 	# support
 	def get_current_cell(self, obj = None):
@@ -112,8 +149,8 @@ class Editor:
 							self.canvas_data[cell].terrain_neighbors.append(name)
 
 	def imports(self):
-		self.water_bottom = load('../graphics/terrain/water/water_bottom.png').convert_alpha()
-		self.sky_handle_surf = load('../graphics/cursors/handle.png').convert_alpha()
+		self.water_bottom = load('graphics/terrain/water/water_bottom.png').convert_alpha()
+		self.sky_handle_surf = load('graphics/cursors/handle.png').convert_alpha()
 
 		# animations
 		self.animations = {}
@@ -155,16 +192,8 @@ class Editor:
 				self.canvas_data[current_cell].add_id(obj.tile_id, offset)
 			else: # no tile exists yet 
 				self.canvas_data[current_cell] = CanvasTile(obj.tile_id, offset)
-
-		# create an empty grid
-		layers = {
-			'water': {},
-			'bg palms': {},
-			'terrain': {}, 
-			'enemies': {},
-			'coins': {}, 
-			'fg objects': {},
-		}
+  		
+		#self.load_map_level()
 
 		# grid offset 
 		left = sorted(self.canvas_data.keys(), key = lambda tile: tile[0])[0][0]
@@ -178,27 +207,27 @@ class Editor:
 			y = row_adjusted * TILE_SIZE
 
 			if tile.has_water:
-				layers['water'][(x,y)] = tile.get_water()
+				self.layers['water'][(x,y)] = tile.get_water()
 
 			if tile.has_terrain:
-				layers['terrain'][(x,y)] = tile.get_terrain() if tile.get_terrain() in self.land_tiles else 'X'
+				self.layers['terrain'][(x,y)] = tile.get_terrain() if tile.get_terrain() in self.land_tiles else 'X'
 
 			if tile.coin:
-				layers['coins'][(x + TILE_SIZE // 2,y + TILE_SIZE // 2)] = tile.coin
+				self.layers['coins'][(x + TILE_SIZE // 2,y + TILE_SIZE // 2)] = tile.coin
 
 			if tile.enemy:
-				layers['enemies'][x,y] = tile.enemy
+				self.layers['enemies'][x,y] = tile.enemy
 
 			if tile.objects: # (obj, offset)
 				for obj, offset in tile.objects:
 					if obj in [key for key, value in EDITOR_DATA.items() if value['style'] == 'palm_bg']: # bg palm
-						layers['bg palms'][(int(x + offset.x), int(y + offset.y))] = obj
+						self.layers['bg palms'][(int(x + offset.x), int(y + offset.y))] = obj
 					else: # fg objects
-						layers['fg objects'][(int(x + offset.x), int(y + offset.y))] = obj
-
-		return layers
-
-
+						self.layers['fg objects'][(int(x + offset.x), int(y + offset.y))] = obj
+		
+		return self.layers
+	
+	
 	# input
 	def event_loop(self):
 		for event in pygame.event.get():
@@ -207,7 +236,15 @@ class Editor:
 				sys.exit()
 			if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
 				print(self.create_grid())
-			
+				self.save_map_level()
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_s:
+					# Lưu bản đồ khi phím "s" được nhấn
+					self.save_map_data()
+				elif event.key == pygame.K_l:
+					# Load lại bản đồ khi phím "l" được nhấn
+					self.load_map_data()	
+
 			self.pan_input(event)
 			self.selection_hotkeys(event)
 			self.menu_click(event)
@@ -335,6 +372,7 @@ class Editor:
 		self.display_surface.blit(self.support_line_surf,(0,0))
 
 	def draw_level(self):
+		
 		for cell_pos, tile in self.canvas_data.items():
 			pos = self.origin + vector(cell_pos) * TILE_SIZE
 
@@ -449,7 +487,6 @@ class Editor:
 			pos = [randint(0, WINDOW_WIDTH),randint(0, WINDOW_HEIGHT)]
 			self.current_clouds.append({'surf': surf, 'pos': pos, 'speed': randint(20,50)})
 
-
 	# update
 	def run(self, dt):
 		self.event_loop()
@@ -464,6 +501,7 @@ class Editor:
 		self.display_sky(dt)
 		self.draw_level()
 		self.draw_tile_lines()
+		
 		# pygame.draw.circle(self.display_surface, 'red', self.origin, 10)
 		self.preview()
 		self.menu.display(self.selection_index)

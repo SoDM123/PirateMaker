@@ -16,16 +16,17 @@ class Main:
 		self.editor = Editor(self.land_tiles)
 
 		# cursor 
-		surf = load('../graphics/cursors/mouse.png').convert_alpha()
+		surf = load('graphics/cursors/mouse.png').convert_alpha()
 		cursor = pygame.cursors.Cursor((0,0), surf)
 		pygame.mouse.set_cursor(cursor)
 
 	def imports(self):
-		self.land_tiles = import_folder_dict('../graphics/terrain/land')
+		self.land_tiles = import_folder_dict('graphics/terrain/land')
 
 	def run(self):
 		while True:
 			dt = self.clock.tick() / 1000
+			
 			
 			self.editor.run(dt)
 			pygame.display.update()

@@ -101,8 +101,8 @@ class Editor:
 							self.canvas_data[cell].terrain_neighbors.append(name)
 
 	def imports(self):
-		self.water_bottom = load('../graphics/terrain/water/water_bottom.png').convert_alpha()
-		self.sky_handle_surf = load('../graphics/cursors/handle.png').convert_alpha()
+		self.water_bottom = load('graphics/terrain/water/water_bottom.png').convert_alpha()
+		self.sky_handle_surf = load('graphics/cursors/handle.png').convert_alpha()
 
 		# animations
 		self.animations = {}
@@ -144,7 +144,7 @@ class Editor:
 		# middle mouse button pressed / released 
 		if event.type == pygame.MOUSEBUTTONDOWN and mouse_buttons()[1]:
 			self.pan_active = True
-			self.pan_offset = vector(mouse_pos()) - self.origin
+			self.pan_offset = vector(mouse_pos()) - self.origin #tính khoảng cách từ chuột giữa khi clicked với điểm origin
 
 		if not mouse_buttons()[1]:
 			self.pan_active = False
@@ -159,10 +159,11 @@ class Editor:
 
 		# panning update
 		if self.pan_active:
-			self.origin = vector(mouse_pos()) - self.pan_offset
-
+			self.origin = vector(mouse_pos()) - self.pan_offset # cập nhật điểm origin(khoảng cách từ điểm origin ban đầu(0,0) với khoản cách khi thay đổi vị trí origin)
+			
 			for sprite in self.canvas_objects:
 				sprite.pan_pos(self.origin)
+		
 
 	def selection_hotkeys(self, event):
 		if event.type == pygame.KEYDOWN:

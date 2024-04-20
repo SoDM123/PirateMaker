@@ -22,43 +22,45 @@ class Main:
 		self.editor = Editor(self.land_tiles, self.switch)
 
 		# cursor 
-		surf = load('../graphics/cursors/mouse.png').convert_alpha()
+		surf = load('graphics/cursors/mouse.png').convert_alpha()
 		cursor = pygame.cursors.Cursor((0,0), surf)
 		pygame.mouse.set_cursor(cursor)
 
+	
+
 	def imports(self):
 		# terrain
-		self.land_tiles = import_folder_dict('../graphics/terrain/land')
-		self.water_bottom = load('../graphics/terrain/water/water_bottom.png').convert_alpha()
-		self.water_top_animation = import_folder('../graphics/terrain/water/animation')
+		self.land_tiles = import_folder_dict('graphics/terrain/land')
+		self.water_bottom = load('graphics/terrain/water/water_bottom.png').convert_alpha()
+		self.water_top_animation = import_folder('graphics/terrain/water/animation')
 
 		# coins
-		self.gold = import_folder('../graphics/items/gold')
-		self.silver = import_folder('../graphics/items/silver')
-		self.diamond = import_folder('../graphics/items/diamond')
-		self.particle = import_folder('../graphics/items/particle')
+		self.gold = import_folder('graphics/items/gold')
+		self.silver = import_folder('graphics/items/silver')
+		self.diamond = import_folder('graphics/items/diamond')
+		self.particle = import_folder('graphics/items/particle')
 
 		# palm trees
-		self.palms = {folder: import_folder(f'../graphics/terrain/palm/{folder}') for folder in list(walk('../graphics/terrain/palm'))[0][1]}
+		self.palms = {folder: import_folder(f'graphics/terrain/palm/{folder}') for folder in list(walk('graphics/terrain/palm'))[0][1]}
 
 		# enemies
-		self.spikes = load('../graphics/enemies/spikes/spikes.png').convert_alpha()
-		self.tooth = {folder: import_folder(f'../graphics/enemies/tooth/{folder}') for folder in list(walk('../graphics/enemies/tooth'))[0][1]}
-		self.shell = {folder: import_folder(f'../graphics/enemies/shell_left/{folder}') for folder in list(walk('../graphics/enemies/shell_left/'))[0][1]}
-		self.pearl = load('../graphics/enemies/pearl/pearl.png').convert_alpha()
+		self.spikes = load('graphics/enemies/spikes/spikes.png').convert_alpha()
+		self.tooth = {folder: import_folder(f'graphics/enemies/tooth/{folder}') for folder in list(walk('graphics/enemies/tooth'))[0][1]}
+		self.shell = {folder: import_folder(f'graphics/enemies/shell_left/{folder}') for folder in list(walk('graphics/enemies/shell_left/'))[0][1]}
+		self.pearl = load('graphics/enemies/pearl/pearl.png').convert_alpha()
 
 		# player
-		self.player_graphics = {folder: import_folder(f'../graphics/player/{folder}') for folder in list(walk('../graphics/player/'))[0][1]}
+		self.player_graphics = {folder: import_folder(f'graphics/player/{folder}') for folder in list(walk('graphics/player/'))[0][1]}
 
 		# clouds
-		self.clouds = import_folder('../graphics/clouds')
+		self.clouds = import_folder('graphics/clouds')
 
 		# sounds
 		self.level_sounds = {
-			'coin': pygame.mixer.Sound('../audio/coin.wav'),
-			'hit': pygame.mixer.Sound('../audio/hit.wav'),
-			'jump': pygame.mixer.Sound('../audio/jump.wav'),
-			'music': pygame.mixer.Sound('../audio/SuperHero.ogg'),
+			'coin': pygame.mixer.Sound('audio/coin.wav'),
+			'hit': pygame.mixer.Sound('audio/hit.wav'),
+			'jump': pygame.mixer.Sound('audio/jump.wav'),
+			'music': pygame.mixer.Sound('audio/SuperHero.ogg'),
 		}
 
 	def toggle(self):
@@ -124,6 +126,7 @@ class Transition:
 				self.border_width = 0
 				self.direction = 1
 			pygame.draw.circle(self.display_surface, 'black',self.center, self.radius, int(self.border_width))
+		
 
 if __name__ == '__main__':
 	main = Main()

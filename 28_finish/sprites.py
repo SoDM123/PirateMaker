@@ -1,4 +1,5 @@
-import pygame
+
+import pygame, sys
 from pygame.math import Vector2 as vector
 
 from settings import *
@@ -204,7 +205,7 @@ class Pearl(Generic):
 			self.kill()
 
 class Player(Generic):
-	def __init__(self, pos, assets, group, collision_sprites, jump_sound):
+	def __init__(self, pos, assets, group, collision_sprites, jump_sound,max_health=1000):
 		
 		# animation
 		self.animation_frames = assets
@@ -233,15 +234,28 @@ class Player(Generic):
 		self.jump_sound = jump_sound
 		self.jump_sound.set_volume(0.2)
 
-	def damage(self):
+		#health bar
+		self.max_health = max_health
+		self.current_health = max_health
+		self.target_health = max_health
+		self.health_bar_length = 500
+		self.health_ratio = self.max_health / self.health_bar_length
+		self.health_change_speed = 2
+
+
+	def damage(self,amount):
 		if not self.invul_timer.active:
 			self.invul_timer.activate()
 			self.direction.y -= 1.5
+			if self.target_health > 0:
+				self.target_health -= amount
+			if self.target_health < 0:
+				self.target_health = 0
 
 	def get_status(self):
 		if self.direction.y < 0:
 			self.status = 'jump'
-		elif self.direction.y > 1:
+		elif self.direction.y > 0.2:
 			self.status = 'fall'
 		else:
 			self.status = 'run' if self.direction.x != 0 else 'idle'
@@ -257,7 +271,8 @@ class Player(Generic):
 			surf = self.mask.to_surface()
 			surf.set_colorkey('black')
 			self.image = surf
-
+	
+	
 	def input(self):
 		keys = pygame.key.get_pressed()
 		if keys[pygame.K_RIGHT]:
@@ -316,5 +331,6 @@ class Player(Generic):
 		self.check_on_floor()
 		self.invul_timer.update()
 
+		
 		self.get_status()
 		self.animate(dt)

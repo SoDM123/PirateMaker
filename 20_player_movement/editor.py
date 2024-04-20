@@ -26,7 +26,7 @@ class Editor:
 
 		# clouds
 		self.current_clouds = []
-		self.cloud_surf = import_folder('../graphics/clouds')
+		self.cloud_surf = import_folder('graphics/clouds')
 		self.cloud_timer = pygame.USEREVENT + 1
 		pygame.time.set_timer(self.cloud_timer, 2000)
 		self.startup_clouds()
@@ -115,8 +115,8 @@ class Editor:
 							self.canvas_data[cell].terrain_neighbors.append(name)
 
 	def imports(self):
-		self.water_bottom = load('../graphics/terrain/water/water_bottom.png').convert_alpha()
-		self.sky_handle_surf = load('../graphics/cursors/handle.png').convert_alpha()
+		self.water_bottom = load('graphics/terrain/water/water_bottom.png').convert_alpha()
+		self.sky_handle_surf = load('graphics/cursors/handle.png').convert_alpha()
 
 		# animations
 		self.animations = {}
@@ -200,6 +200,7 @@ class Editor:
 						layers['fg objects'][(int(x + offset.x), int(y + offset.y))] = obj
 
 		return layers
+		
 
 
 	# input

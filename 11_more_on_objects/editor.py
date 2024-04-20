@@ -103,8 +103,8 @@ class Editor:
 							self.canvas_data[cell].terrain_neighbors.append(name)
 
 	def imports(self):
-		self.water_bottom = load('../graphics/terrain/water/water_bottom.png').convert_alpha()
-		self.sky_handle_surf = load('../graphics/cursors/handle.png').convert_alpha()
+		self.water_bottom = load('graphics/terrain/water/water_bottom.png').convert_alpha()
+		self.sky_handle_surf = load('graphics/cursors/handle.png').convert_alpha()
 
 		# animations
 		self.animations = {}

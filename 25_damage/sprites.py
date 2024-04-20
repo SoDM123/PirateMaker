@@ -189,7 +189,7 @@ class Pearl(Generic):
 			self.kill()
 
 class Player(Generic):
-	def __init__(self, pos, assets, group, collision_sprites):
+	def __init__(self, pos, assets, group, collision_sprites,health_bar):
 		
 		# animation
 		self.animation_frames = assets
@@ -213,6 +213,11 @@ class Player(Generic):
 
 		# timer 
 		self.invul_timer = Timer(200)
+
+		#health
+		self.current_health = 400
+		self.maximum_health = 1000
+		
 
 	def damage(self):
 		if not self.invul_timer.active:

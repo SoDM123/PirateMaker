@@ -58,7 +58,7 @@ class Editor:
 			(cell_pos[0] + col - int(cluster_size / 2), cell_pos[1] + row - int(cluster_size / 2)) 
 			for col in range(cluster_size) 
 			for row in range(cluster_size)]
-
+		
 		# check neighbors
 		for cell in local_cluster:
 			if cell in self.canvas_data:
@@ -129,7 +129,7 @@ class Editor:
 		
 				self.check_neighbors(current_cell)
 				self.last_selected_cell = current_cell
-
+		
 	# drawing 
 	def draw_tile_lines(self):
 		cols = WINDOW_WIDTH // TILE_SIZE
@@ -218,3 +218,5 @@ class CanvasTile:
 			case 'water': self.has_water = True
 			case 'coin': self.coin = tile_id
 			case 'enemy': self.enemy = tile_id
+	
+

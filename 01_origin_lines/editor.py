@@ -30,8 +30,8 @@ class Editor:
 
 	def pan_input(self, event):
 
-		# middle mouse button pressed / released 
-		if event.type == pygame.MOUSEBUTTONDOWN and mouse_buttons()[1]:
+		# middle mouse button pressed / released (khi chuột giữa ckicked hoặc thả )
+		if event.type == pygame.MOUSEBUTTONDOWN and mouse_buttons()[1]:#mouse_buttons()[i] i = 0 là chuột trái, i = 1 là chuột giữa, i = 2 là chuột phải
 			self.pan_active = True
 			self.pan_offset = vector(mouse_pos()) - self.origin
 
@@ -42,13 +42,16 @@ class Editor:
 		if event.type == pygame.MOUSEWHEEL:
 			if pygame.key.get_pressed()[pygame.K_LCTRL]:
 				self.origin.y -= event.y * 50
+				print(event.y)
 			else:
 				self.origin.x -= event.y * 50
+				print(event.y)
 
 
 		# panning update
 		if self.pan_active:
-			self.origin = vector(mouse_pos()) - self.pan_offset
+			self.origin = vector(mouse_pos()) - self.pan_offset 
+			print(self.origin)
 
 	# drawing 
 	def draw_tile_lines(self):

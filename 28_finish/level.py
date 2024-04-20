@@ -46,6 +46,7 @@ class Level:
 		self.hit_sound = audio['hit']
 		self.hit_sound.set_volume(0.3)
 
+
 	def build_level(self, grid, asset_dict, jump_sound):
 		for layer_name, layer in grid.items():
 			for pos, data in layer.items():
@@ -120,8 +121,7 @@ class Level:
 		collision_sprites = pygame.sprite.spritecollide(self.player, self.damage_sprites, False, pygame.sprite.collide_mask)
 		if collision_sprites:
 			self.hit_sound.play()
-			self.player.damage()
-
+			self.player.damage(50)
 	def event_loop(self):
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -146,6 +146,34 @@ class Level:
 			y = self.horizon_y - randint(-50,600)
 			Cloud((x,y), surf, self.all_sprites, self.level_limits['left'])
 
+	def draw_health_bar(self):	
+
+		health_bar_length = self.player.health_bar_length
+		health_bar_width = int(self.player.current_health / self.player.health_ratio)
+
+    	# Tính toán chiều rộng và màu sắc cho thanh chuyển đổi
+		transition_width = 0
+		transition_color = (255, 0, 0)
+		if self.player.current_health < self.player.target_health:
+			self.player.current_health += self.player.health_change_speed
+			transition_width = int((self.player.target_health - self.player.current_health) / self.player.health_ratio)
+			transition_color = (0, 255, 0)
+		elif self.player.current_health > self.player.target_health:
+			self.player.current_health -= self.player.health_change_speed
+			transition_width = int((self.player.target_health - self.player.current_health) / self.player.health_ratio)
+			transition_color = (255, 255, 0)
+
+		# Vẽ thanh máu và thanh chuyển đổi
+		health_bar_rect = pygame.Rect(10, 45, health_bar_width, 25)
+		transition_bar_rect = pygame.Rect(health_bar_rect.right, 45, transition_width, 25)
+
+		pygame.draw.rect(self.display_surface, (255, 0, 0), health_bar_rect)
+		pygame.draw.rect(self.display_surface, transition_color, transition_bar_rect)
+
+		# Vẽ đường viền cho thanh máu
+		pygame.draw.rect(self.display_surface, (255, 255, 255), (10, 45, health_bar_length, 25), 4)
+
+	
 	def run(self, dt):
 		# update
 		self.event_loop()
@@ -153,9 +181,12 @@ class Level:
 		self.get_coins()
 		self.get_damage()
 
+
 		# drawing
 		self.display_surface.fill(SKY_COLOR)
+		
 		self.all_sprites.custom_draw(self.player)
+		self.draw_health_bar()
 
 class CameraGroup(pygame.sprite.Group):
 	def __init__(self):
@@ -187,6 +218,7 @@ class CameraGroup(pygame.sprite.Group):
 		self.offset.x = player.rect.centerx - WINDOW_WIDTH / 2
 		self.offset.y = player.rect.centery - WINDOW_HEIGHT / 2
 
+
 		for sprite in self:
 			if sprite.z == LEVEL_LAYERS['clouds']:
 				offset_rect = sprite.rect.copy()
@@ -200,3 +232,4 @@ class CameraGroup(pygame.sprite.Group):
 					offset_rect = sprite.rect.copy()
 					offset_rect.center -= self.offset
 					self.display_surface.blit(sprite.image, offset_rect)
+	

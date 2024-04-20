@@ -8,7 +8,7 @@ ANIMATION_SPEED = 8
 EDITOR_DATA = {
 	0: {'style': 'player', 'type': 'object', 'menu': None, 'menu_surf': None, 'preview': None, 'graphics': '../graphics/player/idle_right'},
 	1: {'style': 'sky',    'type': 'object', 'menu': None, 'menu_surf': None, 'preview': None, 'graphics': None},
-	
+		
 	2: {'style': 'terrain', 'type': 'tile', 'menu': 'terrain', 'menu_surf': '../graphics/menu/land.png',  'preview': '../graphics/preview/land.png',  'graphics': None},
 	3: {'style': 'water',   'type': 'tile', 'menu': 'terrain', 'menu_surf': '../graphics/menu/water.png', 'preview': '../graphics/preview/water.png', 'graphics': '../graphics/terrain/water/animation'},
 	
